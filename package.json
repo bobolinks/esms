@@ -1,0 +1,44 @@
+{
+  "name": "esms",
+  "version": "0.0.1",
+  "description": "Http server for esm project",
+  "main": "dist/index.js",
+  "bin": {
+    "esms": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "webpack",
+    "decl": "tsc src/index.ts --declaration --allowJs --emitDeclarationOnly --outDir types"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bobolinks/esms.git"
+  },
+  "keywords": [
+    "esm",
+    "server"
+  ],
+  "author": "bobolinks",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bobolinks/esms/issues"
+  },
+  "homepage": "https://github.com/bobolinks/esms#readme",
+  "dependencies": {
+    "args": "^5.0.1",
+    "deepmerge": "^4.2.2",
+    "express": "^4.17.1",
+    "typescript": "^4.2.4"
+  },
+  "devDependencies": {
+    "@types/args": "^3.0.0",
+    "@types/express": "^4.17.11",
+    "@types/node": "^14.14.41",
+    "single-line-log": "^1.1.2",
+    "ts-loader": "^9.1.1",
+    "ts-node": "^9.1.1",
+    "tslint": "^6.1.3",
+    "webpack": "^5.35.1",
+    "webpack-cli": "^4.6.0"
+  }
+}

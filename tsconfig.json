@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "composite": false,
+    "lib": [
+      "es2015"
+    ],
+    "target": "es6",
+    "removeComments": false,
+    "sourceMap": false,
+    "types": [
+      "node"
+    ],
+    "esModuleInterop": true,
+    "declaration": false,
+    "moduleResolution": "Node"
+  },
+  "include": [
+    "./src/*.ts",
+    "./src/**/*.ts",
+    "./src/*.js",
+    "./src/**/*.js"
+  ],
+  "exclude": [
+    "node_modules"
+  ],
+}
