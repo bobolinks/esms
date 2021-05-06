@@ -5,7 +5,7 @@ import merge from 'deepmerge';
 import { EsmServer, EsmsOptions } from './index';
 
 Args
-  .option('port', 'The port on which the app will be running', 3000)
+  .option('port', 'The port on which the app will be running', 80)
   .command('config', 'Config file to be used to run serve', undefined, ['c']);
 
 const args = Args.parse(process.argv);

@@ -4,7 +4,7 @@ export interface EsmsPlugin {
     transform(context: EsmServer, path: string, content?: string): string;
 }
 export interface EsmsOptions {
-    port: number;
+    port?: number;
     index?: string;
     plugins?: Array<EsmsPlugin>;
 }

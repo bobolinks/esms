@@ -19,7 +19,7 @@ export interface EsmsPlugin {
 };
 
 export interface EsmsOptions {
-  port: number;
+  port?: number;
   index?: string;
   plugins?: Array<EsmsPlugin>;
 }
