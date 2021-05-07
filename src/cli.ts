@@ -10,23 +10,35 @@ Args
 
 const args = Args.parse(process.argv);
 const target = Args.sub[0] || process.cwd();
-const configFile = path.resolve(target, args.config || 'esms.config.ts');
+const configFile = path.resolve(target, args.config || 'esms.config.js');
 const options = {
   port: args.port,
 };
 
-if (fs.existsSync(configFile)) {
-  try {
-    const cfg = require(configFile);
-    main(merge.all([{}, options, cfg.default]) as EsmsOptions);
-  } catch (e) {
-    console.error(e);
+async function main() {
+  if (fs.existsSync(configFile)) {
+    let cfg = null;
+    // load with require
+    try {
+      cfg = require(configFile);
+    } catch (_) {
+      try {
+        cfg = (await eval(`import('${configFile}')`));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    if (cfg) {
+      start(merge.all([{}, options, cfg.default || cfg]) as EsmsOptions);
+    }
+  } else {
+    start(options);
   }
-} else {
-  main(options);
 }
 
-function main(options: EsmsOptions) {
+main();
+
+function start(options: EsmsOptions) {
   const server = new EsmServer(target, options);
   server.start();
 }

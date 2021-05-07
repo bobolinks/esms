@@ -1,6 +1,6 @@
 {
   "name": "esms",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Http server for esm project",
   "main": "dist/index.js",
   "bin": {

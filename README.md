@@ -14,5 +14,5 @@ Esms is a http server for esm project.
 
 ## Available Options:
 `--port` Port to use (defaults to 80). 
-`--config` Config file(name like `esms.config.ts`) to be used to run serve.
+`--config` Config file(name like `esms.config.js`) to be used to run serve.
 
