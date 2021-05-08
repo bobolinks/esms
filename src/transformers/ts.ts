@@ -156,11 +156,10 @@ export default function (root: string, filepath: string, code: string): string {
     };
   };
   const parseIndentifier: ts.TransformerFactory<ts.SourceFile> = context => {
-    const { factory } = context;
     return sourceFile => {
       const nodes: any = [];
       const visitor: ts.Visitor = function (this: any, node: ts.Node): ts.Node {
-        if (ts.isIdentifier(node) && !ts.isImportSpecifier(node.parent)) {
+        if (ts.isIdentifier(node) && node.parent && !ts.isImportSpecifier(node.parent)) {
           const name = (node as any).escapedText;
           if (name) {
             (identifiers[name] || (identifiers[name] = { node, count: 0 })).count++;
