@@ -46,10 +46,11 @@ function getIdentifiersByName(context: ts.TransformationContext, container: ts.N
   return nodes;
 }
 
-export default function (root: string, path: string, code: string): string {
+export default function (root: string, filepath: string, code: string): string {
   let hasExported = false;
+  const identifiers: Record<string, { node: ts.Identifier, count: number }> = {};
 
-  const transformer: ts.TransformerFactory<ts.SourceFile> = context => {
+  const normalizePath: ts.TransformerFactory<ts.SourceFile> = context => {
     const { factory } = context;
     let level = 0;
     return sourceFile => {
@@ -154,11 +155,59 @@ export default function (root: string, path: string, code: string): string {
       return factory.updateSourceFile(sourceFile, nodes);
     };
   };
+  const parseIndentifier: ts.TransformerFactory<ts.SourceFile> = context => {
+    const { factory } = context;
+    return sourceFile => {
+      const nodes: any = [];
+      const visitor: ts.Visitor = function (this: any, node: ts.Node): ts.Node {
+        if (ts.isIdentifier(node) && !ts.isImportSpecifier(node.parent)) {
+          const name = (node as any).escapedText;
+          if (name) {
+            (identifiers[name] || (identifiers[name] = { node, count: 0 })).count++;
+          }
+          ts.isTypeNode(node.parent);
+        }
+        return ts.visitEachChild(node, visitor, context);
+      };
+
+      return ts.visitNode(sourceFile, visitor);
+    };
+  };
+  const removeUnusedImports: ts.TransformerFactory<ts.SourceFile> = context => {
+    const { factory } = context;
+    return sourceFile => {
+      const visitor: ts.Visitor = function (this: any, node: ts.Node): ts.Node {
+        if (ts.isImportDeclaration(node)) {
+          const imp = node as ts.ImportDeclaration;
+          let changed = false;
+          let name = imp.importClause?.name;
+          let namedBindings = imp.importClause?.namedBindings as ts.NamedImports;
+          if (name && !identifiers[imp.importClause.name.text]) {
+            name = undefined;
+            changed = true;
+          }
+          if (namedBindings && ts.isNamedImports(namedBindings)) {
+            const es = namedBindings.elements.filter(e => identifiers[e.name.text]);
+            if (!changed && es.length !== namedBindings.elements.length) changed = true;
+            namedBindings = factory.createNamedImports(es);
+          }
+          if (changed) {
+            return factory.updateImportDeclaration(node, node.decorators, node.modifiers, factory.createImportClause(false, name, namedBindings), node.moduleSpecifier);
+          }
+          return ts.visitEachChild(node, visitor, context);
+        }
+        return ts.visitEachChild(node, visitor, context);
+      };
+
+      return ts.visitNode(sourceFile, visitor);
+    };
+  };
   // `const {a,b} = require("asd");`
-  const transformers = [transformer];
+  const transformers = [normalizePath,];
   let src = ts.transpileModule(code, {
     transformers: {
-      before: transformers
+      before: transformers,
+      after: [parseIndentifier, removeUnusedImports]
     },
     compilerOptions: {
       module: ts.ModuleKind.ESNext,

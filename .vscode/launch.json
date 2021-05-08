@@ -14,7 +14,7 @@
       "program": "${workspaceFolder}/node_modules/ts-node/dist/bin.js",
       "args": [
         "${workspaceFolder}/src/cli.ts",
-        "/Users/amoslan/Projects/github/tfjs-models/qna/demo"
+        "/Users/amoslan/Projects/ai/test"
       ]
     }
   ]
